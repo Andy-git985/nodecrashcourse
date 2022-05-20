@@ -1,0 +1,424 @@
+node runtime
+express framework
+
+model view controller pattern
+
+npm - node package manager
+packages get stored in "node_modules" folder
+all dependencies are listed in a "package.json" file
+npm sciprs can be created to run certain tasks such as run a server
+
+npm init 	Generates a package.json file
+npm install express 	Installs a package locally
+npm install -g nodemon 	Installs a package globally
+
+Node Core Modules (path, fs, http, etc)
+
+const path = require('path');
+const myFile = requite('./myFile')
+
+package dependencies
+package.json stores all dependencies 
+run npm insall to install all packages listed if you move computers
+
+dev dependencies
+npm install --save--dev nodemon
+npm install -D nodemon
+
+deploy or move somewhere else
+npm install to recreate node modules folder
+
+run file
+npm index.js
+npm index
+
+
+
+-person.js
+const person = {
+  name: 'John Doe',
+  age: 30
+}
+
+module.exports = person
+
+-index.js
+const person = require('./person')
+
+console.log(person);
+
+------------
+-index.js
+Person class example after creating a class in person.js
+const Person = require('./person')
+
+const person1 = new Person('John Doe', 30)
+person1.greeting()
+
+-----------
+// Module Wrapper Function
+(function(export, module, _filename, _dirname) {
+
+  })
+example:
+code in person.js
+console.log(__dirname, __filename);
+
+but run from index.js
+
+---------
+import Person from './person' not in Node as of this video
+ES6 feature
+
+other way is common js
+
+
+--------
+path.js
+const path = require('path')
+
+does not work in my own testing
+
+
+------
+path.demo.js examples
+
+-------
+fs.demo.js examples
+
+
+fs.mkdir example:
+Asynchronous but synchronous version availble in docs
+
+traversy used '/test' but I didn't
+
+fs.mkdir(path.join(__dirname, 'test'), {}, function(err) {
+  if (err) throw err
+  console.log('Folder created`');
+})
+
+arrow function syntax
+fs.mkdir(path.join(__dirname, 'test'), {}, err => {
+  if (err) throw err
+  console.log('Folder created`');
+})
+
+// Create and write to file 
+fs.writeFile(
+  path.join(__dirname, 'test', 'hello.txt'), 'Hello World!', err => {
+  if (err) throw err
+  console.log('File written to...');
+})
+
+// Append file example
+fs.writeFile(
+  path.join(__dirname, 'test', 'hello.txt'), 'Hello World!', err => {
+  if (err) throw err
+  console.log('File written to...');
+
+  fs.appendFile(
+    path.join(__dirname, 'test', 'hello.txt'), ' I love Node.js', err => {
+    if (err) throw err
+    console.log('File written to...');
+  })
+})
+
+// Read file
+fs.readFile(path.join(__dirname, 'test', 'hello.txt'), 'utf8', (err, data) => {
+  if (err) throw err;
+  console.log(data);
+});
+
+
+// Rename file
+// second parameter is new name
+fs.rename(
+  path.join(__dirname, 'test', 'hello.txt'),
+  path.join(__dirname, 'test', 'helloworld.txt'),
+  (err, data) => {
+    if (err) throw err;
+    console.log('File renamed...');
+  }
+);
+
+
+=========
+os_demo.js
+
+pretty standard examples
+
+=========
+url_demo.js
+
+=========
+event_demo.js
+
+========
+logger.js located in root
+
+logger.js
+const EventEmitter = require('events');
+// Creates a random Universally unique identifier
+const uuid = require('uuid');
+
+// console.log(uuid.v4());
+// aee2c73a-f534-4050-9787-ec7e8cf61caa
+
+class Logger extends EventEmitter {
+  log(msg) {
+    // Call event
+    this.emit('message', { id: uuid.v4(), msg });
+  }
+}
+
+module.exports = logger;
+
+index.js
+
+homework assignment append logs into file
+
+==================
+index.js running server examples
+
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  console.log(req.url);
+  // Server running on 5000
+  // go to localhost:5000/about, /about will show in console
+});
+
+// looks for environment variable Port or 5000
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+=======
+example 2
+
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  // '/' is the index page
+  if (req.url === '/') {
+    res.end('<h1>Homepage</h1>');
+  }
+});
+
+// looks for environment variable Port or 5000
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+// If I make a change from Home to Homepage, it does not autoupdate
+
+======
+nodemon script use example
+
+1:
+packpage.json
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+to:
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+
+//deploys with node as start and switches to nodemon to constantly watch
+
+2:
+npm run dev
+// uses nodemon to run script
+
+3:
+ctrl + U to look at source code
+
+4:
+// setting content type with res.writeHead()
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  // '/' is the index page
+  if (req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end('<h1>Hello this is nodemon doing work.</h1>');
+  }
+});
+
+// looks for environment variable Port or 5000
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+5:
+created public and touch index.html about.html
+
+6:
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  // '/' is the index page
+  if (req.url === '/') {
+    fs.readFile(
+      path.join(__dirname, 'public', 'index.html'),
+      (err, content) => {
+        if (err) throw err;
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(content);
+      }
+    );
+  }
+});
+
+// looks for environment variable Port or 5000
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+summary:
+checking url for '/'
+readfile for index.html
+check for error
+set content and status to 200
+serve content 
+
+7:
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  // '/' is the index page
+  if (req.url === '/about') {
+    fs.readFile(
+      path.join(__dirname, 'public', 'about.html'),
+      (err, content) => {
+        if (err) throw err;
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(content);
+      }
+    );
+  }
+});
+
+// looks for environment variable Port or 5000
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+//change / to /about and index.html to about.html
+
+8:
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+  // '/' is the index page
+  if (req.url === '/api/users') {
+    const users = [
+      { name: 'Bob Smith', age: 40 },
+      { name: 'John Doe', age: 30 },
+    ];
+    res.writeHead(200, { 'Content-type': 'application/json' });
+    res.end(JSON.stringify(users));
+  }
+});
+
+// looks for environment variable Port or 5000
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+// serving json content but not as effcient
+
+==========
+Server with dynamic file names
+
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+
+const server = http.createServer((req, res) => {
+
+  // Build file path
+  let filePath = path.join(
+    __dirname,
+    'public',
+    req.url === '/' ? 'index.html' : req.url
+  );
+  // Extension of file
+  let extname = path.extname(filePath);
+
+  // Initial content type
+  let contentType = 'text/html';
+
+  // Check ext and set content type
+  switch (extname) {
+    case '.js':
+      contentType = 'text/javascript';
+      break;
+    case '.css':
+      contentType = 'text/css';
+      break;
+    case '.json':
+      contentType = 'applicaton/json';
+      break;
+    case '.png':
+      contentType = 'image/png';
+      break;
+    case '.jpg':
+      contentType = 'image/jpg';
+      break;
+  }
+
+  // Read file
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      if (err.code == 'ENOENT') {
+        // Page not found
+        fs.readFile(
+          path.join(__dirname, 'public', '404.html'),
+          (err, content) => {
+            res.writeHead(200, { 'Content-type': 'text/html' });
+            res.end(content, 'utf8');
+          }
+        );
+      } else {
+        //  Some server error
+        res.writeHead(500);
+        res.end(`Server Error: ${err.code}`);
+      }
+    } else {
+      // Success
+      res.writeHead(200, { 'Content-type': contentType });
+      res.end(content, 'utf8');
+    }
+  });
+});
+
+// looks for environment variable Port or 5000
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+summary:
+1: creating server that gets a request and response
+2: look in public evaluae req.url
+3: get extension and set conent type
+4: read file
+5: check error
+6: ENOENT nott found 404
+7: Server 500
+8: Success send 200 and send content type
